@@ -1,32 +1,45 @@
-Created new rasbian OS disk with Full Desktop using PiBakery
-
 sudo apt-get update
 sudo apt-get dist-upgrade
 sudo reboot
 
-#sudo rpi-update
+sudo rpi-update
+sudo reboot
+# Update and upgrade system, then reboot twice as per your original script
+sudo apt-get update && sudo apt-get dist-upgrade -y
 sudo reboot
 
-#Turn on camera, changed locale
-sudo raspi-config
+sudo rpi-update
+sudo reboot
 
-#Copy and pasted these to the command line
-sudo apt-get install -y build-essential cmake pkg-config
-sudo apt-get install -y libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
-sudo apt-get install -y libxvidcore-dev libx264-dev
-sudo apt-get install -y libgtk2.0-dev
-sudo apt-get install -y libatlas-base-dev gfortran
-sudo apt install -y libpango-1.0-0 libatk1.0-0 libcairo-gobject2 libpangocairo-1.0-0 libqt4-test libtiff5 libqtcore4 libqtgui4 libgdk-pixbuf2.0-0 libgtk-3-0 libjasper1 libcairo2
-#sudo apt install -y libpango-1.0-0 libatk1.0-0 libcairo-gobject2 libpangocairo-1.0-0 libqt4-test libtiff5 libqtcore4 libwebp6 libavcodec58 libavutil56 libqtgui4 libavformat58 libgdk-pixbuf2.0-0 libgtk-3-0 libilmbase23 libjasper1 libcairo2 libswscale5 libopenexr23 
+# Install all required dependencies in fewer commands
+sudo apt-get install -y \
+  build-essential cmake pkg-config git \
+  libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
+  libxvidcore-dev libx264-dev \
+  libgtk2.0-dev libgtk-3-0 libgdk-pixbuf2.0-0 \
+  libatlas-base-dev gfortran libglib2.0-dev libbluetooth-dev \
+  libjpeg-dev libtiff6 libopenjp2-7 libcairo2 libcairo-gobject2 \
+  libpango-1.0-0 libpangocairo-1.0-0 \
+  libqt5gui5 libqt5core5a libqt5widgets5 qtbase5-dev qtwayland5 qtwayland5-dev \
+  libxcb-xinerama0 libxcb-xfixes0 \
+  python3-opencv python3-numpy python3-venv python3-pip
 
-cd ~/
-sudo pip3 install numpy
-sudo pip3 install imutils
-sudo apt install python3-opencv
-sudo pip3 install bluepy
-cd ~
+# Clone your repo (once)
+git clone https://github.com/Wand4Hire/pi_to_potter
 
-python3
-import cv2
-cv2.__version__
+# Set up Python virtual environment and install Python packages
+python3 -m venv ~/potter
+source ~/potter/bin/activate
+pip install --upgrade pip
+pip install imutils bluepy pigpio numpy opencv-python gpiozero
 
+# Enable and start pigpio daemon for GPIO control
+sudo systemctl enable pigpiod
+sudo systemctl start pigpiod
+
+
+#for remote connect for headless setup - follow instructions at https://www.raspberrypi.com/documentation/services/connect.html
+sudo apt install rpi-connect
+rpi-connect on
+rpi-connect signin
+#something similar to Complete sign in by visiting https://connect.raspberrypi.com/verify/XXXX-XXXX will show up
